@@ -1,0 +1,178 @@
+
+https://code.visualstudio.com/docs/python/environments
+$ python -m venv .venv
+
+$ python -m pip install --upgrade pip
+$ pip install jupyter
+$ pip install notebook
+
+Book on Economic Networks
+https://networks.quantecon.org/
+
+
+
+PYTHON PROGRAMMING FOR ECONOMICS AND FINANCE
+
+
+
+
+
+Python Programming for Economics and Finance
+
+Chapter1
+About These Lectures
+
+SymPy 						for symbolic algebra, including limits, derivatives and integrals
+statsmodels 				for statistical routines
+scikit-learn 				for machine learning
+Keras 						for machine learning
+Pyro and PyStan 			for Bayesian data analysis
+GeoPandas 					for spatial data analysis
+Dask 						for parallelization
+Numba 						for making Python run at the same speed as native machine code
+CVXPY 						for convex optimization
+scikit-image and OpenCV 	for processing and analysing image data
+BeautifulSoup 				for extracting data from HTML and XML files
+
+PyTorch					https://pytorch.org/
+CuPy					https://cupy.dev/
+Vega-Altair				https://altair-viz.github.io/
+Python Graph Library	https://python-graph-gallery.com/
+
+
+
+Chapter02
+Getting Started
+
+inserting Unicode
+\alpha
+
+Install Quantecon
+https://pypi.org/project/quantecon/
+$ pip install quantecon
+
+Install a library within Jupyter Notebook
+!conda install quantecon
+
+
+
+Chapter03
+An Introductory Example
+
+allocate storage in memory for T + 1
+b = np.empty(T+1)
+
+
+
+Chapter04
+Functions
+
+
+
+Chapter05
+Python Essentials
+
+with open("newfile.txt", "r") as f, open("output2.txt", "w") as fo:
+        for i, line in enumerate(f):
+            fo.write(f'Line {i}: {line} \n')
+
+
+
+Chapter06
+OOP I: Objects and Methods
+
+each object has a unique identifier
+y = 2.5
+print(id(y))
+
+Inspection using Rich
+$ pip install rich
+
+from rich import inspect
+x = 10
+inspect(10)
+
+
+
+Chapter07
+Names and Namespaces
+
+https://rushter.com/blog/python-garbage-collector/
+
+getting the namespaces
+
+import math
+math.__dict__
+math.__dict__.items()
+
+Viewing namespaces
+vars(math).items()
+dir(math) # get the names
+
+
+
+Chapter08
+OOP II: Building Classes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
