@@ -1,0 +1,337 @@
+
+Introduction
+https://github.com/Apress/numerical-python-second-ed
+
+$ conda install ipykernel
+$ conda install notebook
+
+
+
+Chapter01
+Introduction to Computing with Python
+
+Numeric and Scientific pages
+https://wiki.python.org/moin/NumericAndScientific
+
+https://wiki.python.org/moin/NumericAndScientific/Libraries
+
+MathJax
+https://www.mathjax.org/
+
+Rich output dispaly
+from IPython.display import display, Image, HTML, Math
+
+Page 54 for an interactive graph
+
+Also this reference for interactive graphs
+
+
+
+Chapter02
+Vectors, Matrices, and Multidimensional Arrays
+
+Vectorized: computations that are formulated to represent data as arrays and computation in terms of array operations.
+
+ndarray the main data structure for multidimensional arrays in NumPy
+Basic attributes of the ndarry class
+Attribute 	Description
+Shape		Tuple that contains the number of elements for each dimension (axis) of the array
+Size		The total number elements in the array
+Ndim		Number of dimensions (axes)
+nbytes		Number of bytes used to store the data
+dtype		The data type of the elements in the array
+
+Data types
+dtype		Variants								Description
+int			int8, int16, int32, int64				Integers
+uint		uint8, uint16, uint32, uint64			Unsigned (nonnegative) integers
+bool		Bool									Boolean (True or False)
+float		float16, float32, float64, float128		Floating-point numbers
+complex		complex64, complex128, complex256		Complex-valued floating-point numbers
+
+Creating arrays with a dtype
+np.array([1, 2, 3], dtype=np.int)
+
+Order of Array Data in Memory
+store the array as a consecutive sequence of values is to store
+Row-major format: store the rows after each other, used in C, order='C'
+Column-major format: store the columns after each other, used in Fortran, order='F'
+
+Meshgrid arrays
+multidimensional coordinate grids can be generated from a 1-dimensional
+
+ndarray.strides defines exactly how mapping is done
+example
+array is 2 rows x 3 columns
+data type is int32 so each element uses 4 bytes
+total memory buffer is 2 x 3 x 4 = 24 bytes
+strides is (4 x 3, 4 x 1) = (12, 4)
+
+Indexing and slicing
+One-dimensional arrays
+[begin_index : end_index : slice]
+end_index is not inclusive
+
+Fancy indexing
+arr01[arr02]
+
+Boolean-valued indexing
+arr01[arr02 > value]
+
+Page 85 for a visual summary of indexing methods
+
+Aggregate functions
+functions for calculating the product of elements in an array
+
+Page 101 for a visual summary
+data.sum() 			# sums the entire array
+data.sum(axis=0)	# sums by column
+data.sum(axis=1)	# sums by row
+
+
+
+Chapter03
+Symbolic Computing
+
+Computer Algebra Systems (CASs) are repesentations of mathematical objects and expressions that are manipulated and transformed analytically
+
+Symbolic Python (SymPy)
+
+import sympy
+sympy.init_printing()	# basically pretty printing
+
+Symbols
+SymPy represents mathematical symbols as Python objects
+An instance of Symbol has a name and set of attributes describing its properties and methods for querying those properties and for operating on the symbol object
+
+Create x
+x = sympy.Symbol('x')
+
+# provide more information to the variable
+x = sympy.Symbol('x', real=True)
+
+# will nicely print the formula
+sympy.sqrt(x ** 2)
+
+Create many symbols at once
+a, b, c = sympy.symbols('a, b, c', negative=True)
+
+Numbers in SymPy
+Integer
+x = sympy.Symbol('x', integer=True) # represents some integer
+
+i = sympy.Integer(19)	# represents a specific integer
+i.is_Integer	# results in True
+
+is_Name indicate if the object is of type Name
+is_name indicate if the object is known to satisfy the condition name
+
+Integers in SymPy have arbitrary precision, they have no fixed lower or upper bounds
+
+Float
+Float(value, precision)
+sympy.Float('0.3', 25)
+
+Rational
+sympy.Rational(numerator, denominator)
+
+Functions
+sympy.Function('function_name')	# undefined (abstract) unapplied function
+
+Defined vs Undefined functions
+Applied vs Unapplied functions
+
+An unapplied function can be applied to a set of input functions that represent the domain of the function by calling the function instance with those symbols as arguments
+
+Undefined function
+x, y, z = sympy.symbols('x, y, z')
+f = sympy.Function('f')
+type(f)
+f(x)    # just prints the function
+
+g = sympy.Function('g')(x, y, z)
+g # prints the function with the symbols
+g.free_symbols # returns {x, y, z}, the unique symbols contained in a given expression
+
+Defined function
+has a specific implementation and be numerically evaluated for all valid input parameters. Can subclass sympy.Function
+sympy.functions.elementary.trigonometric.sin
+sympy.sn(x)
+
+Lambda functions (Anonymous functions)
+h = sympy.Lambda(x, x ** 2)
+
+Expressions
+Are represented as trees, where leaves are symbols and nodes are class instances that represent mathematical operations
+
+Example expression
+1 + 2x^2 + 3x
+
+x = sympy.Symbol('x')
+expr = 1 + 2 * x**2 + 3 * x**3
+expr
+
+Traverse the expression tree
+expr.args
+
+expr.args[1]
+returns 2x^2
+
+expr.args[1].args[1]
+returns x^2
+
+expr.args[1].args[1].args[0]
+returns x
+
+Manipulating expressions
+functions are immutable objects and return a new expression
+
+Simplification
+sympy.simplify(expr)
+expr.simplify()
+
+there are simplifying expressions that target specific portions of the expression
+
+Expand
+simpy.expand(expr)
+
+can pass in keywords to expand the product as required, this is equivalent to calling the more specific functions, mul=True is the same as sympy.expand_mul
+sympy.expand(expr, mul=True)
+sympy.sin(x + y).expand(trig=True)
+
+Factor
+sympy.factor(expr)
+Inverse of other expressions
+sympy.trigsimp
+sympy.powsimp
+sympy.logcombine
+
+Collect
+sometimes need fine grain control over factoring
+sympy.collect factors terms that contain a given symbol or list of symbols
+
+Example
+x+y+xyz
+expr = x + y + x * y * z
+expr.collect(x) # factor the x term
+expr.collect(y) # factor the y term
+
+Rewriting fractions
+apart()
+rewrite a fraction as a partical fraction
+sympy.apart(1/(x**2+3*x+2), x)
+
+together()
+combine partial fractions
+sympy.together(1/(y*x+y)+1/(1+x))
+
+cancel()
+cancel shared factors between numerator and the denominator in the expression
+sympy.cancel(y/(y*x+y))
+
+Substitutions
+2 methods for substitutions
+1.) subs: usually more suitable
+2.) replace: more powerful
+
+subs()
+(x+y).subs(x,y)
+
+Instead of chaining can pass a dictionary
+example
+expr = x*y + z**2 * x
+values = {x: 1.25, y: 0.4, z: 3.2}
+expr.subs(values)
+
+Numerical evaluation
+sympy.lambdify()
+takes a set of free symbols and an expression as arguments and generates a function that efficiently evaluates the numerical value of the expression
+
+One argument
+expr_func = sympy.lambdify(x, expr)
+expr_func(1.0)
+
+Multiple arguments
+expr_func = sympy.lambdify([x, y, z], expr)
+expr_func(1.0, 2.0, 3.0)
+
+Can make the function be numpy aware
+expr_func = sympy.lambdify(x, expr, 'numpy')
+
+Lookup
+sympy.utilities.autowrap module
+theano_function from sympy.printing.theanocode moduel
+
+Calculus
+Derivatives and differentials: the change of functions as input variables are varied
+Integrals: accumulations of functions over ranges of input
+
+Derivatives
+sympy.diff
+
+Both ways are acceptable
+f = sympy.Function('f')(x)
+sympy.diff(f, x)
+
+Higher order derivatives
+sympy.diff(f, x, x)
+sympy.diff(f, x, 3)
+
+Multivariate functions
+g = sympy.Function('g')(x, y)
+g.diff(x, y)
+g.diff(x, 3, y, 2)
+
+For applied functions just replace sympy with expr
+expr = x**4 + x**3 + x**2 + x + 1
+expr.diff(x)
+
+Display the derivative
+d = sympy.Derivative(expr)
+d # prints the equation
+
+The formal representation of a derivative
+d.doit()
+
+Integrals
+sympy.integrate to evaluate integrals
+sympy.Integral to evaluate formal integrals
+
+Definite integrals: has a specified integration limit, such as area or volume
+Indefinite integrals: doe not have integration limits and denotes the antiderivative (inverse of derivative of a function)
+
+sympy.integrate(expr)			# indefinite integral
+sympy.integrate(expr, a, b)		# definite integral
+
+a, b, x, y = sympy.symbols('a, b, x, y')
+f = sympy.Function('f')(x)
+sympy.integrate(f)
+sympy.integrate(f, (x, a, b))
+
+sympy.integrate(sympy.sin(x))
+
+Series
+Page 143
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

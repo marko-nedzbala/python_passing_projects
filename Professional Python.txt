@@ -1,0 +1,998 @@
+Chapter01
+Decorators
+A tool for wrapping code around functions of classes and cause them to "opt in" to the decorator's functionality.
+
+A callable that accepts a callable and returns a callable
+A decorator is a function that accepts the decorated function as its positional argument. A decorator expects another function and does something with it
+A decorator is just a function, that expects another function and does something with it.
+
+Developers use decorators because they are only interested in the final (decorated function)
+Decorator example: can use multiple decorators
+
+@decorateName is assumed to take a single, positional argument (the method being decorated)
+
+Order of decorators
+from bottom (starting at the function) to the top(the first decorator), like functions being evaluated from innermost to outermost
+Decorators are applied immediately after the decorated callable is created
+remember:
+@decorator1
+@decorator2
+def functionName():
+is the same as: functionName = decorator1(decorator2(functionName))
+the same reason that functions are resolved from innermost to outermost
+
+order:
+1.) the functioName
+2.) @decorator2: returns its own callable, that value is sent to decorator1
+3.) @decorator1
+
+Why Decorators
+Decorators provide an excellent way to say ==> "I want this specific, reusable piece of functionality in these specific places"
+When well written they are modular and explicit
+Great for setup and teardown
+Decorators interact with the decorated function itself they are great at registering functions elsewhere
+
+When Decorators
+Additional Functionality
+Data Sanitization or Addition
+Function Registration
+
+Writing Decorators
+Decorators are functions that usually accept the decorated callable as their only argument and return a callable
+Decorator code runs when the decorator is applied to the decorated function, not when the decorated function is called
+
+Bound methods (methods part of a class) will receive self as the first argument (just as any other bound method) and expects 1 additional positional argument which is the decorated method
+
+You can want additional functionality to run when the decorated method is executed, by returning a different callable that adds the appropriate functionality and calls the decorated method in the course of its execution
+def decorate(func):
+	def inner():
+		#code
+		return something
+	return inner #returns a new callable, and replaces the decorated method
+
+Perserving help docs
+use @functools.wraps and import functools
+
+decorators have an implied argument: the method that is being decorated
+an argument to a decorator is processed once, when the function is declared and decorated
+arguments to the function are processed when that function is called
+
+the inner method (in the local scope of the decorator method) the callable returned by the decorator, what is assigned to the function name
+decorators that take arguments add one more wrapping layer 
+the decorator that takes the argument is not actually the decorator
+	--> instead it is a function that returns the decorator
+		--> which is a function that takes one argument (the decorated method)
+			--> which decorates the function and returns a callable
+
+Variable Arguments
+There is an implied argument: the method being decorated
+Arguments to:
+-decorator: processed once when the function is declared and decorated
+-function: processed when that function is called
+
+How this works:
+Decorators: have an inner function that they return, callable returned by the decorator and assigned to the function name. If an argument is taken it adds one more layer of wrapping (because the decorator is a function that returns the decorator, a function that takes 1 argument, that decorates the function and returns the function).
+The function is run before the decorator, therefore the function call (the part before the @ syntax) syntax precedes the decorator syntax (@) and the result of the function call is applied to the decorator
+
+@decoratorName(parameters)
+if you don't want to pass in parameters than must make the call: #decoratorName()
+
+to make all the following work:
+@decoratorName #applied as normal
+@decoratorName() #applied without parameters
+@decoratorName(parameters) #applied with parameters
+
+have to create your decorator to detect its usage
+decorated_ a boolean variable that determines usage of the decorator function
+example:
+decorated_ is True @decoratorName
+decorated_ is False @decoratorName()
+
+Using decorators with classes
+class MyClass():
+	#code
+def func(deocrated):
+	class MyClass(parameter):
+		def func2(self, *args, **kwargs):
+			#code
+		return decorated(*args, **kwargs)
+	return MyClass
+@func
+def myFunc():
+	#code
+Under this way must use func() this way:
+x = myFunc():
+	x.run()
+
+To avoid the above and use it the normal way:
+class MyClass():
+	#code
+	def __call__(self, *args, **kwargs):
+		return self.run(*args, **kwargs)
+def func(deocrated):
+	class MyClass(parameter):
+		def func2(self, *args, **kwargs):
+			#code
+		return decorated(*args, **kwargs)
+	return MyClass() #this now returns an instance
+@func
+def myFunc():
+	#code
+to call, call it normally
+myFunc()
+
+
+
+Chapter02
+Context Managers
+Similar to decorators, wrap code around other code
+decorators: wrap defined blocks of code, functions/classes being an example
+context managers: wrap arbitrary free-form blocks of code
+
+Context manager: an object that wraps an arbitrary block of code, ensure that setup is consistency performed when the context manager is entered, and teardown is consistency performed when the context manager is exited. Exit is guaranteed. Good way to ensure cleanup.
+
+with statement is a context manager and evaluates the expression that follows it
+example:
+wuth statement as condition:
+	#code
+
+returns __enter__ and __exit__ special objects
+
+__enter__ method returns a result that is assigned to the variable after the as keyword, performs setup, runs immediately when the object is returned and its return value is assigned to the variable after the as (as is optional). Takes no arguments except for the traditional self argument.
+
+__exit__ method takes 3 positonal arguments, (all set to None if no exception, populated if an exception occurs within the block). May optionally handle exceptions that are raised in the wrapped code, or handle anything else needed to tear down the context manager state
+0.) self
+1.) an exception type		exc_type
+2.) an exception instance	exc_instance
+3.) a traceback option		traceback
+
+If the __exit__ method receives an exception it has 3 options:
+1.) Propagate(spread/promote) the exception: reraising it after the __exit__ finishes, and returning False
+2.) Suppress the exception: having __exit__ return True
+3.) Raise a different exception: used in place of the exceptions it was sent
+
+Basically to create context managers create a class and the associated methods
+class ClassName(object):
+	def __init__():
+		#code
+	def __enter__(self):
+		#code
+	def __exit__(self, exc_type, exc_instance, traceback): #doesn't have to be these names, but illustrates a good point nonetheless
+		#code
+
+to use the custom context manager
+with ClassName(parameters) as instance:
+	instance.method()
+
+Also great for avoiding repetition of code
+
+Propagating Exceptions: the __exit__ method returns False
+
+Supressing Exceptions: the __exit__ method returns True
+
+Handling certain exception classes
+the __exit__ function can check to see if the exception is an instance of a particular exception class and perform whatever exception handling is necessary and return True/False if it gets any other Exception class
+#inside the __exit__ ()
+if issubclass(exc_type, exceptionError):
+	#logic
+	return True
+
+Excluding subclasses
+if you want to catch a given class of exception, but explicitly not its subclasses. You cannot do this in a traditional except block
+#inside the __exit__ ()
+if exc_type == exceptionError:
+	#logic
+	return True
+
+Attribute-Based Exception Handling
+a situation where you receive an exception but only want to handle a particular exit code, a context manager is the only way to achieve this
+
+Simpler syntax:
+@contextlib.contextmanager #needs import contectlib
+the function it decorates expects to yield a single value somewhere during the function
+example
+
+@contextlib.contextmanager
+def functionName():
+	#code
+
+#then to use
+with functionName():
+	yield
+	#code
+
+Context managers can take exception-handling code that would be repeated in multiple different places through-out an application and giving that code a single home. Can encapsulate bolierplate try-except-finally constructs that may otherwise repeat
+
+
+
+Chapter03
+Generators
+result in memory savings because the large collections of data do not need to be stored in memory
+
+A function, instead of executing and returning a single value, sends back one or more values in a sequence, executes until it is told to yield a value. Continues until the function is complete, or until iteration over that generator terminates
+
+yield: commands the function to send back a value to the caller, but does not terminate. The execution is temporarily halted until the generator is resumed by the calling code, at which point it picks up where it left off
+
+generator function is recognizable by 1 or more yield statements inside the funciton
+
+next(): built-in and simply gets the next value. next(object) instead of using a for...in loop
+#need to first create you generator, Python will return the generator object
+x = generatorFunction()
+#use next() to call the next value
+next(x)
+
+StopIteration Exception: for Python 2 because it does not allow yield return statements
+
+Python 3 allows both a yield and return statement in the same function. However in this case return effectively becomes an alias for raise StopIteration
+return value
+	is equivalent
+raise StopIteration(value)
+
+
+Communication with generators: supports send() because the yield statement is an expression
+send() allows communication back to a generator. This works because the yield statement is actually an expression
+if a generator is resumed with send(), instead of next(), the value provided to send can actually be assigned to the result of the yield expression
+the send() behavior is the responsibility of the generator to determine whether and how it handles values sent to it.
+
+#example
+def squares(cursor=1):
+    while True:
+        response = yield cursor ** 2
+        if response:
+            cursor = int(response)
+        else:
+            cursor += 1
+sq = squares()
+print(next(sq)) # results in 1
+print(next(sq)) # results in 4
+print(next(sq)) # results in 9
+print(sq.send(7)) # results in 49
+
+iterator: any object that has __next__, example: generator
+iterable: any object with __iter__ is responsible for returning an iterator
+
+x = iter(object)
+next(x)
+
+the actual iterator __iter__ method returns is a generator that responds to the next()
+
+
+Generators are great for when determining a value only when needed, not ahead of time
+--Access data in pieces
+--Compute data in pieces
+
+yield from: allows generators to call other generators, known as generator delegation
+generator delegation: is a generator simply delegating to another generator, any values sent to the wrapping generator will also be sent to the current delegate generator
+def func():
+	yield from gen1()
+	yield from gen2()
+
+#example
+def gen1():
+    yield 'foo'
+    yield 'bar'
+
+def gen2():
+    yield 'spam'
+    yield 'eggs'
+
+def full_gen():
+    yield from gen1()
+    yield from gen2()
+
+
+
+Chapter04
+Magic Methods
+Magic methods (dunder-functionName): are meant to overload Python operators or built-in methods, defined using __syntax__
+provides consistency between the contracts that built-in classes provide as well as the contracts that custom classes provide
+
+A hook that is run when particular syntax appears, the interpreter knows how to call the magic method, the programmer does not
+
+__magicMethodName__
+
+Available Methods
+
+Creation and Destruction
+run when instances of the class is created/destroyed
+__init__ 	#runs immediately after the instance is created
+__new__ 	#precedes the __init__ method, responsible for actually creating and returning that instance, always a static method
+__del__ 	#invoked when an object is destroyed
+
+Type Conversion
+__str__ 	#returns a string
+__unicode__ 	#Python 2
+__bytes__ 	#Python 3
+__bool__ 	#Python 3 bool
+__nonzero__ 	#Python 2 bool
+__int__ 	#convert to integer
+__float__ 	#convert to float
+__complex__ 	#convert to complex
+
+Comparisons
+
+Binary Equality
+__eq__ 		#the == operator, takes 2 positional arguments, self and other by default
+__ne__ 		#the != operator, if no method is provided, Python will simply take the opposite of __eg__
+		Relative Comparisons: used by sorted(listName), so you can override them and the list will sort them based on that
+__lt__ 		# <
+__le__ 		# <=
+__gt__ 		# >
+__ge__ 		# >=
+__cmp__ 	#older and less preferred way of dealing with relative comparisons. Checked only if the comparison methods above are not defined
+		#returns the following:
+			self < other #return a negative number
+			self > other #return a positive number
+			self == other #return 0
+
+Operator Overloading
+
+Binary Operators
+Types:
+vanilla method x + y
+reverse method y + x
+in-place method x += y
+
+OPERATOR 	METHOD 		REVERSE 		IN-PLACE
++ 		__add__ 	__radd__ 		__iadd_
+- 		__sub__ 	__rsub__ 		__isub__
+* 		__mul__ 	__rmul__ 		__imul__
+/ 		__truediv__ 	__rtruediv__ 		__itruediv__
+// 		__floordiv__ 	__rfloordiv__ 		__ifloordiv__
+% 		__mod__ 	__rmod__ 		__imod__
+** 		__pow__ 	__rpow__ 		__ipow__
+& 		__and__ 	__rand__ 		__iand__
+| 		__or__ 		__ror__ 		__ior__
+^ 		__xor__ 	__rxor__ 		__ixor__
+<< 		__lshift__	__rlshift__ 		__ilshift__
+>> 		__rshift__ 	__rrshift__ 		__irshift__
+
+Division
+Python 2 5/2 = 2 __div__
+Python 3 5/2 = 2.0 __truediv__
+	Unary Operators, take single positional argument, self, and perform the operation as needed
++ # __pos__
+- # __neg__
+~ # __invert__
+
+Overloading Common Methods
+__len__ 	#length of an item
+__repr__ 	#how an object will represent itself when output on the Python interactive terminal
+		repr intended for programmers and machines
+		str intended for people and reading
+__hash__ 	#to uniquely identify objects and do so using a numeric representation, takes 1 positonal argument, self, returns the id of an object
+__format__ 	#capable of formatting various kinds of objects based on Python's format specification, takes (self, formatSpecificationString)
+__instancecheck__ # isinstance()
+__subclasscheck__ # issubclass(), both take (self, objectBeingTestedAgaisnt)
+__abs__ 	#abs()
+__round__ 	#round()
+
+Collections
+__contains__ 	#expression like: x in object, (self, object) parameters, returns True if found False if not found all three below are used for key lookups 		or slice lookups
+__getitem__ 	#gets item
+__setitem__ 	#sets item
+__delitem__ 	#deletes item
+__getattr__ 	#invoked when attempting to get an attribute from an object, either by using . notation or getattr, only invoked if not found on the object 		in the usual places
+__setattr__ 	#invoked when attempting to write an object, either by using . notation or setattr, it is always invoked
+__getattribute__ #called unconditionally
+
+
+
+Chapter05
+In Python everything is a function. This means that functions and classes can be provided as arguments, exist as members of class instances and do anything an object is capable of doing
+
+Called in the following order when creating a class
+1.) __new__ 
+2.) __init__
+
+Metaclasses: classes responsible for generating other classes
+
+Relationship between a class and an instance of that class
+1.) A class defines the properties and available actions of its instances
+2.) A class serves as a factory that creates said instances
+
+With Metaclasses this relationship can be hierarchical
+When instantiating a class that you wrote => you class serves as the definition of the instance's properties and actions => performs the generation of the instnace
+When you define the class you are using a special substitute syntax that stands in for the instantiation of a different class, the type
+
+When the Python interpreter gets to the first line of a class definition it invokes the type constructor under the hood. Type is a built-in class that is the default class for other class objects, it creates other classes => the defualt metaclass.
+
+type constructor takes 3 positional arguments: name, bases, attrs
+name: a string, the name of the class
+bases: a tuple, superclasses for that class
+attrs: a dictionary, of all attributes on the class
+
+def init(self, name):
+    self.name = name
+
+def eat(self):
+    pass
+
+def go_to_vet(self):
+    pass
+
+Animal = type('Animal', (object,), 
+              {   '__doc__' : 'A class representing an arbitrary animal',
+                  '__init__': init,
+                  'eat':eat,
+                  'go_to_vet':go_to_vet,
+                  })
+
+type: is the primary metaclass in Python. Type is the superclass from which other metaclasses inherit, the top the metalcass hierarchy. 
+
+type --> class
+type --> meta --> class
+
+Never attempt to declare or use a metaclass that does not directly subclass type. Inheriting from two classes with different metaclasses is only acceptable if one of the metaclasses is a direct subclass of the other.
+
+Writing Metaclasses
+__new__ handles the creation of the class, and must return the new class. A class method that must mirror the arguments sent to type's __new__ method
+Takes 4 positional arguments:
+1.) cls: the metaclass itself
+2.) name: desired name of the class as a string
+3.) bases: tuple of the class's superclasses
+4.) attrs: a dictionary of attributes that the class should contain
+
+If a class superclass two or more distinct classes with distinct metaclasses, the Python interpreter will resolve this by using the common subclass. If classes do not have the only 1 metaclass Python will not make a decision and fail because Python can only have 1 metaclass for each class.
+
+Using Metaclasses
+#creating the metaclass
+# this is a metaclass
+class MyClass(type):
+	#code
+
+#the preferred way
+class MyClass(metaclass=Meta):
+	pass
+
+#meta
+C = Meta('C', (object,), {})
+
+When to use Metaclasses
+Declarative Class Declaration: create a delineation between class declaration and class structure
+Class Verification: if a class must conform to a particular interface
+Non-Inheriting Attributes: can be used as a tool to cause certain attributes of a class to not automatically inherit
+
+meta-coding: code that inspects other code in the application
+
+
+
+Chapter06
+Class Factories
+a function that creates a class at runtime. Allows for the creation of a class whose attributes are determined as a result of user input
+
+A class factory function: a function that creates and returns a class
+
+#this example with metaclasses also works here
+def create_example_class():
+	def init(self, name):
+	    self.name = name
+	def eat(self):
+	    pass
+	def go_to_vet(self):
+	    pass
+	return type('Animal', (object,), 
+              	{   '__doc__' : 'A class representing an arbitrary animal',
+                    '__init__': init,
+                    'eat':eat,
+                    'go_to_vet':go_to_vet,})
+
+multiple calls to create_animal will return distinct classes. The classes returned all have the same name and the same attributes, they are not actually the same class. Each run of the function assigns the same dictionary keys and similar functions.
+Contingent: the similarity between the classes that would be returned. 
+
+#also acceptable to use class keyword
+def create_example_class():
+	class Animal:
+		def init(self, name):
+		    self.name = name
+		def eat(self):
+		    pass
+		def go_to_vet(self):
+		    pass
+	return Animal
+
+When to write class factories
+when it is necessary to create a class based on execution-time knowledge, such as user input
+
+singleton: a class pattern where only one instance is permitted
+
+
+
+Chapter07
+Abstract Base Classes
+a mechanims for assigning identity
+purpose: to provide a somewhat formalized way to test whether an object conforms to a given specification
+a mechanims to declare that one class derives identity from another
+purpose is declarative: provides a way for an object to assert that it conforms to a protocol. A way to require that a subclass implements a given protocol.
+
+abc module
+provides a metaclass ABCMeta which any abstract base class must use
+any abstract base class can declare that it is an ancestor of any concrete class by using the register method
+example:
+import abc
+class MyClass(metaclass=abc.ABCMeta):
+	#logic
+MyClass.register(list) #the list here is you want MyClass to implement list
+
+#in Python 3.3 onwards can use @register
+@MyClass.register
+class extender:
+	#logic
+
+__subclasshook__
+when you cannot use register method
+must be defined as a class method, using the @classmethod
+takes a single additional positional argument, the class being tested
+takes precedence over the register method
+can return 3 values:
+1.) True: if the tested class should be considered a subclass
+2.) False: if the tested class should not be considered a subclass
+3.) Not Implemented: the traditional route of checking, (the register() ) is used 
+example
+class AbstractDuck(metaclass=abc.ABCMeta):
+    @classmethod
+    def __subclasshook__(cls, other):
+        quack = getattr(other, 'quack', None) #class=other, method=quack
+        return callable(quack)
+
+class Duck:
+    def quack(self):
+        pass
+
+class NotDuck:
+    quack = 'foo'
+
+Declaring a protocol
+similar to an interface
+
+@abc.abstractmethod
+def my_method(self):
+	#logic
+this designates that a given method must be overridden by all subclasses,
+
+abstract properties
+@proptery
+@abc.abstractmethod
+def my_method(self):
+	#logic
+
+abstract class or static method
+@classmethod
+@abc.abstractmethod
+def my_method(cls):
+	#logic
+
+built-in abcs
+
+
+
+Chapter08
+Python 2 strings = ASCII
+Python 3 strings = Unicode
+Python 3 bytestrings is similar enough to Python 2 strings
+
+Unicode: uses 4 bytes to represent each character
+
+text string stores data as Unicode
+byte string stores raw bytes
+
+because Unicode is a superset of ASCII any valid ASCII text is also valid Unicode text
+
+ISO-8859 latin-1
+a superset of ASCII just like Unicode
+
+Reading files in Python 3
+Python makes some assumptions based on encoding of the system it is running on
+import locale
+locale.getpreferredencoding()
+Linux and Mac use UTF-8
+Windows uses Windows-1252 or CP-1252
+
+Specifying encoding
+with open('unicode.txt', 'r', encoding='utf-8') as f:
+	text_str = f.read()
+
+specifying the encoding of a Python files
+# -*- coding: utf-8 -*-
+
+strict codec: does not take any byte stream and decode it. Can usually detect non-Unicode byte strams are invalid and fail
+
+encode() and decode() provide a mechanism to ask a codec to behave differently when it encounters a set of characters that it cannot handle. Both methods take an optional second argument, errors, specified as a string
+strict: is the defualt value that raises exception classes such as UnicodeDecodeError
+2 common error handlers
+ignore: skips over any bytes that the codec does not know how to decode
+replace: skips over any bytes that the codec does not know how to decode and replaces them with a placeholder character
+example = "my example string"
+example.decode("codec", "ignore")
+
+registering error handlers
+use the codecs module has a function for registering additional error handlers
+register_error(name_for_error_handler, actual_function_that_does_error_handling)
+
+actual_function_that_does_error_handling contains:
+receives the exception that would otherwise be raised
+responsible for re-raising it, raising another exception or returning an appropriate string value to be substituted into the resulting string
+
+exception instance contains start and end attributes that correspond to the substring that the codec is unable to encode/decode
+reason attribute with a human-readable explanation for the failure to encode/decode
+object attribute with the original string
+
+if it is returning a replacement value the function must return a tuple with 2 elements
+1.) replacement character(s)
+2.) position in the original string where encoding/decoding should continue, usually the end attribute
+
+example
+import codecs
+def replace_with_underscore(err):
+	length = err.end - err.start
+	return ('_' * length, err.end)
+codecs.register_error('replace_with_underscore', replace_with_underscore)
+
+
+
+Chapter09
+Regular Expressions
+specify a pattern of text to identify within a bigger text string
+
+why?
+1.) data mining
+2.) validation
+
+re module
+import re
+re.search()
+
+re.match() #only searches for a match that starts at the beginning of the string
+
+raw string: r'mystring' raw strings do no interpret the \ character as an escape character. the preferred way to work with regular expressions
+
+Match Objects
+#example for all
+x = re.search(r'text you want')
+x.method()
+
+group() returns a string with the text of the match
+
+search() returns the first instance of the found string
+finall() #returns a list
+finditer() #returns a generator
+
+character classes: specify that a single character should match one of a set of possible characters
+[Pp]ython to match Python, python
+
+ranges
+[0-9]  #matches digits
+[a-z]  #matches lower case characters
+
+negation ^
+[^a-z] # match anything besides lower case digits
+
+shortcuts				the negation
+\w # match words			\W
+\s # match whitespace characters	\S
+\d # match digits			\D
+\b # match a 0-length substring
+
+^string		# beginning of string
+$string 	# end of string, word boundary character shortcut
+
+any character
+char.
+match p. with p
+
+Optional characters
+'honou?r' the u? is optional
+
+Repetition
+{N}
+[\d]{3} #find 3 digits
+
+reptition ranges
+{M,N}
+M is lower bound
+N is the upper bound
+
+{+,} is the same as {1,}
+{*,} is the same as {0,}
+
+Grouping
+groups allow you to select each individual group within the match and get the entire match
+use groups() and it will return a tuple of the groups
+
+0 gets the entire match
+
+named groups
+?P<group_name>
+x.group('group_name')
+
+Lookahead
+a mechanism to accept/reject a match based on the presence/absence of content after it without making the subsequent content part of the match
+n(?!char)
+positive lookahead: the match be followed by the character(s) but still not part of the match
+n(?=char)
+
+compiled regular expressions
+regex = re.compile(regular expression)
+returns a compiled regular expression object which can be reused
+regex.search(regular expression, pos=num, endpos=num)
+
+the starting/ending position of the string to be searched against
+pos is the start position
+endpos is the end position
+
+
+
+Chapter11
+Unit testing
+
+System tests: automated tests that are run against a ecosystem
+Unit tests: a test that seeks to isolate the code being tested from the rest of the world. An assertion or a set of assertions.
+assert code_statement
+expects the expression sent to it to evaluate to True
+if True: assert does nothing
+if False: AssertionError is raised
+
+running unittest
+$ python -m unittest filename
+
+results
+. successful test
+.F failure, a test that raises AssertionError
+.E errors, a test that raises anything but AssertionError
+.s tests that are skipped
+
+skipped tests
+skipIf decorator
+causes the test to be skipped if the expression it receives evaluates to True
+skipUnless
+causes the test to be skipped if the expression it receives evaluates to False
+both take a required 2nd argument that describes why the test was skipped
+
+Loading tests
+$ python -m unittest discover
+looks for unittests by running test_fileName.py
+
+Mocking
+the process of declaring within a test that a certain function call should be stipulated to give a particular output, and the function call itself should be suppressed
+the mock module temporarily replaces a variable in a given namespace with a special object called a MagicMock that returns the variable to its previous value after the scope of the mock is concluded
+MagicMock object accepts/tracks any call made to it and returns whatever you tell it
+MagicMock stores information about how many times it was called, the nature of the call and other information to make it 'mock' a function
+
+mock.patch.object(module, 'function_name') as m:
+	m.return_value = whatever you want
+
+Inspecting mocks
+m = mock.MagicMock()
+m.called 		#checks if MagicMock was called
+m.call_count 		#how many times MagicMock was called
+
+Multiple Calls
+want to know of multiple calls to MagicMock
+assert_has_calls
+whenever you make a call to a MagicMock object, it internally creates a call object that stores the call signature (and appends it to mock_calls list on the object), considered to be equivalent if the signatures match
+
+tools
+tox: creates virtualenv to test your program on different versions of Python
+
+
+
+Chapter12
+Command-Line Interface (CLI) tools
+optparse: older and deprecated, only on Python 2.6 or earlier, and Python 3.0 to Python 3.2
+argparse: newer, Python 2.7, and Python 3.3 on
+
+Argparse
+
+Most basic example
+import argparse
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    args = parser.parse_args()
+
+Arguments and Options
+Option Flags
+-v --verbose
+-q --quiet
+
+parser.add_argument('-q', '--quiet',
+action='store_true',		#store_true, the reason why the parser will not expect a value, the option is a flag and doesn't accept a value
+dest='quiet',			#determines how to look up the parsed value, the string is the name of the attribute, args.quiet
+help='Suppress output.',	#what users get if they call -h or --help
+)
+
+Options with Values
+if __name__ == '__main__':
+parser = argparse.ArgumentParser()			#
+parser.add_argument('-H', '--host',			#
+default='localhost',					#
+dest='host',						#
+help='The host to connect to. Defaults to localhost.',	#
+type=str,)						#what type the value is expected to be
+args = parser.parse_args()				#
+
+passing arguments within the CMD
+-Hlocalhost
+-H"localhost"
+-H=localhost
+-H="localhost"
+-H localhost
+-H "localhost"
+
+Choices
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--cheese',
+    choices=('american', 'cheddar', 'provolone', 'swiss'),
+    default='swiss',
+    dest='cheese',			#use args.cheese to call your arguments, and the name of the option at the cmd
+    help='The kind of cheese to use',
+    )
+    args = parser.parse_args()
+#see note
+print('You have chosen %s cheese.' % args.cheese2)
+#calling
+--cheese type
+
+Accepting Multiple Values
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--madlib',
+                        default=['fox', 'dogs'],
+                        dest='madlib',
+                        help='2 words',
+                        nargs=2,                        
+                        )
+    args = parser.parse_args()
+print('The quick brown {0} jumped over the lazy {1}.'.format(*args.madlib))
+#calling
+$ filename.py --madlib val1 val2
+
+this only takes 0 or 2 arguments, if you want variable number of arguments
+nargs='+' #expects 1 or more values
+nargs='*' #expects 0 or more values
+
+Positional arguments
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser()
+	parser.add_argument('addends',		#the use of addends, instead of --addends means its an optional argument
+			help='Integers to provide a sum of',
+			nargs='+',
+			type=int,	)
+	args = parser.parse_args()
+print('%s = %d' % (' + '.join([str(i) for i in args.addends]), sum(args.addends),))
+
+Reading files
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-c', '--config-file',
+			default='/etc/cli_script',
+			dest='config',
+			help='The configuration file to use.',
+			type=argparse.FileType('r'))
+args = parser.parse_args()
+print(args.config.read())
+
+
+
+Chapter13
+asyncio
+https://docs.python.org/3.7/library/asyncio.html
+only available in Python 3.4 and onwards
+
+the event loop
+how asynchronous applications work and run in the background, when something needs to run it is registered to the event loop
+task: registering a function to an event loop. the event loop is then responsible for running the task as soon as it can get to it
+
+need to import asyncio
+
+can create an event loop by the BaseEventLoop object and get the subclass
+asyncio methods are not thread-safe
+
+import asyncio
+loop = asyncio.get_event_loop()
+loop.run_forever() #the loop will run forever, but lost control of the Python interpreter
+
+you need to call loop.run_forever otherwise the loop will not run
+
+registering tasks and running the loop
+create a function and use the loop.call_soon(functionName)
+
+to stop a loop
+import functools
+def func(loop):
+	#code
+	loop.stop()
+
+loop.call_soon(functools.partial(func, loop))
+
+delaying calls
+loop.call_later(seconds_to_wait, functionName)
+
+why you use partials
+asyncio methods that take function only take function objects, not the agruments to those called functions
+partial() takes the arguments and keyword arguments that are passed to the underlying function
+example
+functools.partial(functionName, Arguments)
+x = functools.partial(print, 'hello world')
+x()
+#is the same as
+print('hello world')
+
+partial is great for debugging because the partial object knows what it is calling and with what arguments
+
+coroutines: a special kind of function desigend to run within an event loop. If it is created but never run an error is issued to the logs. Generators that are consumed by the event loop. The event loop consumes the generator and ultimately extracts the result
+@asyncio.coroutine
+def coro_sum(*args):
+    answer = 0
+    for i in args:
+        answer += i
+    return answer
+loop = asyncio.get_event_loop()
+x = loop.run_until_complete(coro_sum(1,2,3,4,5))
+print(x)
+
+Nested coroutines
+coroutines provide a special mechanism to call other coroutines that mimics sequential programming
+yield from statement #a coroutine can run another coroutine and the statement returns the result
+
+#nice little example
+@asyncio.coroutine
+def nested(*args):
+    print('the nested function ran with args: {0}'.format(args))
+    return [i + 1 for i in args]
+
+@asyncio.coroutine
+def outer(*args):
+    print('the outer function ran with args: {0}'.format(args))
+    answer = yield from nested(*[i * 2 for i in args])
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(outer(2,3,5,8))
+
+Futures and Tasks
+Future object: an object that is told about the status of an asynchronous function
+Tasks: a subclass of Future, a coroutinue is wrapped in a Task. Task stores the result and handled the function in the yield from statement
+asyncio.async() places a coroutine on the event loop and returns the associated Task
+careful this seems outdated
+
+Coroutine ensures that the nested coroutne runs before/during its execution
+
+Callbacks: a function (or coroutine) that should execute once the Future is done, and receives Future as an argument. A reversal of the yield from model. Callback is being attached to the original task to run after the exectuion of the task
+
+Queues
+a collection of tasks to be processed by a task runner
+
+Servers
+most common uses asyncio module is to create services that run as a daemon and accept commands
+defines a Protocol class that is able to fire appropriate events on receiving/losing a connection and when it receives data
+has a create_server method that opens a socket allowing data to be sent to the event loop and on the protocol
+
+asyncio.protocol
+Page 273 example, but outdated code
+
+
+
+Chapter14
+Linting is thus distinct from Formatting because linting analyzes how the code runs and detects errors whereas formatting simply restructures how code appears. By default, linting for Python is enabled in Visual Studio Code using Pylint, and you can enable other linters of your choice
+
+PEP 8
+https://www.python.org/dev/peps/pep-0008/
+
+docstrings
+the first statement in a function/class that is a string is automatically assigned to __doc__ variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,107 @@
+
+
+Chapter01
+Introduction
+
+Data item: the basic component of a file in a file system, the smallest named unit of data that has meaning in the real world.
+
+Database life cycle
+1.) Requirements analysis: determined by interviewing both the producers and users of data and using the information to produce a formal requirements specification.
+2.) Logical design: the global schema, a conceptual data model diagram that shows all the data and their relationships developed using Entity-Relationship (ER) or UML.
+a.) Conceptual data modeling
+b.) View integration: when the design and team are large, multiple views of data and relationships occur
+c.) Transformation of the conceptual data model to SQL tables
+d.) Normalization of tables
+3.) Physical design: involves the selection of indexes (access methods), partitioning and clustering data
+4.) Database implementation, monitoring, and modification
+
+
+
+Chapter02
+The Entity-Relationship Model
+
+The ER model has 2 levels of definition:
+1.) Simple: used by current design tools,
+2.) Complex
+
+The basic ER model consists of 3 classes of objects:
+1.) Entities
+principal data objects about which information is collected.
+Entity instance (Entity Occurrence): a particular occurrence of an entity.
+
+2.) Relationships
+represent real-world associations among 1 or more entities, have no physical or conceptual existence other than that which depends upon their entity associations.
+
+3.) Attributes
+Attributes: are characteristics of entities that provide descriptive detail about them.
+Attribute value: a particular instance (or occurrence) of an attribute within an entity or relationship.
+2 types of attributes:
+1.) Identifiers (key): used to uniquely determine an instance of an entity.
+2.) Descriptors (nonkey attribute): used to specify a non-unique characteristic of a particular entity instance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

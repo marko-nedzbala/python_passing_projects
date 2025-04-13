@@ -1,0 +1,179 @@
+
+https://github.com/PacktPublishing/web-development-with-django-second-edition
+
+
+
+Chapter01
+An Introduction to Django
+
+running the development server with a specific address and port number
+$ python manage.py runserver 0.0.0.0:8001
+
+running the development server with a specific port
+$ python manage.py runserver 8001
+
+http://www.example.com/?parameter1=value1&parameter2=value2
+Django will automatically parses these parameter strings into QueryDict objects
+can access those parameters via
+qd = QueryDict('k=a&k=b&k=c')
+qd['k']         # value
+qd.get('k')     # value
+qd.getlist('k)  # access all the keys
+
+none of this is needed as Django will do this automatically for you
+this is enough
+name = request.GET.get('name')
+
+can pass 'name' like this
+http://localhost:8001/?name=bob
+
+work with your settings
+from django.conf import settings
+if settings.DEBUG:
+    do_some_logging()
+
+
+
+Chapter02
+Models and Migrations
+
+Using Jupyter Notebook with Django
+cannot simply use Jupyter, because python manage.py setups up your Django environment
+
+$ pip install django-extensions
+INSTALLED_APPS += ['django_extensions']
+$ pipenv update jupyter-client==8.0.3 jupyter-console==6.5.1 jupyter-core==5.2.0 notebook==6.5.4 traitlets==5.9.0 --dev
+$ pip install notebook==6.5.6 //this did not work
+$ python manage.py shell_plus --notebook
+
+in the Notebook
+
+import os, sys
+PWD = os.getenv('PWD')
+os.chdir(PWD)
+sys.path.insert(0, os.getenv('PWD'))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "local_settings.py")
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+import django
+django.setup()
+
+to save the result to the database
+my_object.save()
+my_object.objects.create() # will do it automatically
+
+
+
+Chapter03
+URL Mapping, Views, and Templates
+
+template configuration
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        ...
+    }
+]
+
+when 'DIRS' is empty, Django will search for templates in the directory of the app folder
+if we do anything else, must tell Django
+
+'DIRS': []  --> Django looks at each app for a template directory
+'DIRS': [os.path.join(BASE_DIR, 'my_templates')] --> ./main_project/templates
+
+
+this is incorrect
+Exercise 3.03 – displaying a list of books and reviews
+
+
+
+Chapter04
+An Introduction to Django Admin
+
+
+
+Chapter05
+Serving Static Files
+
+
+
+Chapter06
+Forms
+
+
+
+Chapter07
+Advanced Form Validation and Model Forms
+
+
+Chapter08
+Media Serving and File Uploads
+
+MEDIA_ROOT
+MEDIA_URL
+
+
+
+Chapter09
+Sessions and Authentication
+
+
+
+Chapter10
+Advanced Django Admin and Customizations
+
+
+
+Chapter11
+Advanced Templating and Class-Based Views
+
+
+
+Chapter12
+Building a REST API
+
+
+
+Chapter13
+Generating CSV, PDF, and Other Binary Files
+
+
+
+Chapter14
+Testing Your Django Applications
+
+
+
+Chapter15
+Django Third-Party Libraries
+
+django-allauth: lets you loging with another website's credentials
+
+
+
+Chapter16
+Using a Frontend JavaScript Library with Django
+
+# example fetch()
+function myFetch() {
+    fetch(this.state.url, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json'
+        }
+    }).then((response) => {
+        return response.json();
+    });
+}
+
+Example JSON
+
+function myFetch() {
+    fetch('https://restcountries.com/v3.1/name/portugal')
+    .then((response) => {
+        return response.json()
+    });
+}
+
+fetch('https://restcountries.com/v3.1/name/portugal').then((response) => response.json());
+

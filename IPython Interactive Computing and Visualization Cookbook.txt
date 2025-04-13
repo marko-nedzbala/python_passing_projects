@@ -1,0 +1,173 @@
+***Learning IPython for Interactive Computing and Data Visualization***
+All-in-One distribution
+-Enthought Python Distribution
+-Anaconda
+-Python(x,y)
+-ActivePython
+Packages
+-IPython
+-NumPy
+-SciPy
+-Matplotlib
+-NetworkX
+-Pandas
+-Python Imaging Library (PIL)
+-PySide
+-PyQt
+-Cython
+%lsmagic #list of magic commands
+%pylab #enables scientific computing of NumPy and matplotlib packages
+Cell magics: special magic commands that are applied to a whole cell instead of a single line.
+%timeit exec(In[#]) #to execute a certain line number
+
+Starting multiple cores
+ipcluster start -n No.ofEngines
+mpi4py package for Open-MPI
+%%cython
+
+Learning OOP
+destroying python objects
+def __del__(self):
+	#code
+x = ObjectInstance
+x = None #this line will run the __del__()
+_variableName #Python protected variables
+__variableName #Python private variables
+
+
+
+
+
+
+Chapter01
+%lsmagic #gets the list of magic commands
+nbconvert will convert a notebook to other formats, such as HTML, PDF
+
+interactive charts
+from IPython.html.widgets import interact
+
+@interact
+def plot():
+	# code
+
+Page 47 Creating an IPython extension with custom magic commands
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

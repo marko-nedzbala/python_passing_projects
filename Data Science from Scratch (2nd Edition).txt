@@ -1,0 +1,240 @@
+https://github.com/joelgrus/data-science-from-scratch
+
+Chapter01
+from collections import defaultdict
+
+
+
+Chapter02
+f-string
+x = f"{variable_name_01} {variable_name_02}"
+# example
+x = f"{first_name} {last_name}"
+
+defaultdict: when you try to look up a key it doesn't contain, it first adds a value for it using a zero-argument function you provided when you created it
+# example
+x = defaultdict(int) 	# int() will produce 0
+
+*args: returns a tuple
+**kwargs: returns a dictionary
+
+Type annotations
+def add(a: int, b: int) -> int:
+	return a + b
+
+mypy: is an external tools that will read your code, inspect the type annotations and let you know about type errors before you ever run your code
+
+
+
+Chapter03	Page 52
+pyplot maintans an internal state in which you build up a visualization step by step, once done you can save it via savefig() or display with show()
+
+Altair
+https://altair-viz.github.io
+
+
+
+Chapter04
+Linear Algebra
+
+from typing import List
+from typing import Tuple
+good for annotations
+Vector = List[float]
+def add(v: Vector, w: Vector) -> Vector:
+	# code
+
+if a matrix has n rows and k columns, we will refer to it as an n x k matrix
+each row of an n x k matrix as a vector of length k
+each column as a vector of length n
+
+
+
+Chapter05
+Good reference
+
+
+
+Chapter06
+
+
+
+
+
+
+Chapter07	 Page 88
+Chapter08	 Page 99
+Chapter09	 Page 107
+Chapter10	 Page 124
+Chapter11	 Page 140
+Chapter12	 Page 151
+Chapter13	 Page 159
+Chapter14	 Page 169
+Chapter15	 Page 175
+Chapter16	 Page 187
+Chapter17	 Page 195
+Chapter18	 Page 206
+Chapter19	 Page 216
+Chapter20	 Page 237
+Chapter21	 Page 248
+Chapter22	 Page 276
+Chapter23	 Page 287
+Chapter24	 Page 299
+Chapter25	 Page 313
+Chapter26	 Page 322
+Chapter27	 Page 331
+Index		 Page 338
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
