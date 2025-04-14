@@ -1,0 +1,452 @@
+
+I like the dedication
+"To every Jane and Joe Programmer, chained to their computer, burning the midnight oil, striving to make a dream come true"
+
+
+
+
+
+PART I - INTRODUCTION TO WXPYTHON
+Chapter01
+Welcome to wxPython
+
+#bare-minimum code to create a wxPython Window
+class MyApp(wx.App):
+    def OnInit(self):
+        self.frame = wx.Frame(None, title = 'Window')
+        self.panel = MyFrame(self.frame)
+        self.panel.Show()
+        return True
+if __name__ == '__main__':
+    app = MyApp(False)
+    app.MainLoop()
+
+OnInit() called my application's MainLoop() when the program is stated and provides an entry point to start the main logic
+Frame: the main window of your application, top level window
+Windows: objects such as buttons or text boxes
+
+The example code illustrates the bare-minimum code
+The 5 steps for every wxPython program:
+1.) Import the necessary wxPython package
+2.) Subclass the wxPython application class
+3.) Define an application initialization method
+4.) Create an application class instance
+5.) Enter the application's main event loop
+
+Step-by-Step of the above 5 steps
+
+1.) Import the necessary wxPython package
+import wx #this must be imported first
+from wx import xrc #any other wxPython packages,
+from wx import html # just to be safe
+this order only applies to wxPython modules
+
+2.) Subclass the wxPython application class
+every wxPython program must have:
+1 application object: instance of wx.App or a subclass you define where you declare OnInit(), OnInit() gets called by wx.App parent class when application starts
+at least 1 frame object
+
+3.) Define an application initialization method
+if your subclass creates a custom __init__() then the parent method, wx.App.__init__(), is automatically invoked on object creation
+
+4.) Create an application class instance
+app = App() #App() is the wx.App subclass
+app.MainLoop() #invoked the MainLoop()
+
+Foundation of wxPython Program
+1.) application object
+2.) top-level window object
+
+Application Object
+Manages/starts the main event loop
+THe main event loop responds to windowing system events and dispatches them to the right event handler.
+Every wxPython application needs exactly 1 application object, must be an instance of class wx.App, or custom class of wx.App
+Creating a wx.App subclass
+1.) Define the subclass
+2.) Write OnInit() method within the subclass. If this returns False exits immediately, so it should return True
+3.) Create an instance of the class in the main section of your program
+4.) Call the MainLoop() of the application instance. This method transfers program control to wxPython
+
+Top-level window object
+Manages the most important data, controls and presents them to the user
+
+
+
+Chapter02
+Giving your wxPython program a solid foundation
+
+wxPython program foundation, 2 required objects
+1.) Application object: manages the main event loop, sits on top of the top-level window object
+2.) Top-level window object: generally manages the most important data and controls and presents them to the user
+
+The application object must be:
+1.) An instance of the class wx.App
+2.) Custom subclass thereof
+
+Application object
+there can only be one
+the event loop responds to windowing system events and dispatches them to the appropriate event handler, cannot create any wxPython graphical objects until after your program has instantiated an application object
+
+should subclass wx.App for uses, like a database connection
+need to perform 2 steps
+1.) define the subclass
+2.) write an OnInit() method within the subclass definition
+3.) create an instance of the class in the main section of your program
+4.) call the MainLoop() method of the application instance, this method transfer program control to wxPython
+
+the better way to do things
+
+class MyApp(wx.App):
+    def OnInit(self):
+        # initialization for your custom class is typically managed here, not in the Class __init__()
+
+        # will also call these methods too
+        frame = MyFrame('Hello World', (50, 60), (450, 340))
+        frame.Show()
+
+Use this to create your GUI
+https://www.wxpython.org/pages/overview/#hello-world
+
+Not recommended way
+if your class needs a __init__() need to call it this way
+wx.App.__init__(self)
+
+can call wx.App subclass in main, however it is not recommended to do so
+
+creating it in __main__, but not the recommended way to do things
+# must create wx.App instance first
+class MyApp(wx.App):
+    def __init__(self, redirect=False, filename=None, useBestVisual=False, clearSigInt=True):
+        wx.App.__init__(self, redirect, filename, useBestViusal, clearSight)
+
+    def OnInit(self):
+        return True
+
+if __name__ == '__main__':
+    app = wx.App()
+    frame = MyFrame(None)
+    frame.Show(True)
+    app.MainLoop()
+
+Application object lifecycle
+1.) Application object created
+    1.) automatically calls OnInit(), window objects can be created
+2.) MainLoop() is called, wxPython events are now being handled
+    1.) events are now processed
+3.) Application object destroyed
+    1.) happens when all top-level windows are closed
+
+Top-level window object
+
+Output
+
+Python programs can direct ouput:
+1.) standard stream: sys.stdout
+2.) standard error stream: sys.stderr
+
+can decide to have wxPython take control of the standard streams and redirect output to a window, this is default on Windows, on Unix more likely to be on a console and therefore wxPython does not control the stream by default
+
+Redirecting output
+text sent to streams is redirected to a separate wxPython frame
+
+if __name__ == '__main__':
+    # outputs all content into the console
+    app = App(redirect=False)
+
+    # write the output to a file
+    app = App(redirect=True, filename='output')
+
+Shutting down a wxPython Application
+Close() on all top-level windows
+
+to allow the program to continue after the last window closes, SetExitOnFrameDelete(flag=False)
+
+if the program shuts down without your control, you have 1 chance to cleanup resources
+your application binds to an event handler for the wx.EVT_QUERY_END_SESSION event, then the event handler is called when wxPython is notified of the shutdown
+event parameter is wx.CloseEvent
+the close event may allow the application to veto the shutdown, use the CanVeto() to find out
+worth doing if you cannot save your resources, if Close() methods return False then the application attempts to veto the shutdown
+
+Top-level window object
+the top-level window object is usually the main window of your applcation and contains widgets and interfact objects, any application that doesn't have a parent container
+can be:
+1.) wx.Frame (the usual case)
+2.) wx.Dialog
+
+Can set it via:
+SetTopWindow()
+or the first frame in wx.App's top-level window
+
+frame = window
+
+creating subclasses of wx.Frame
+wx.Frame(parent, id=-1, title="", pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE, name="frame")
+
+hardcoding values for you frame
+class MyFrame(wx.Frame):
+    def __init__(self):
+        wx.Frame.__init__(self, None, -1, "My Friendly Window", (100, 100), (100, 100))
+
+wxPython IDs
+each widget has a window ID, must be unique within each frame, can resuse IDs between frames
+widget_constructor(parent, id_number)
+create a unique relationship between an event that happens to a specific object and a function called in response to that event
+create an event:
+1.) explicitly pass a positive integer into the widget_constructor
+2.) get wxPython to create an ID using wx.NewID()
+3.) pass either a global constant wx.ID_ANY or -1 to the widget widget_constructor
+
+1.) explicitly pass a positive integer into the widget_constructor
+can ensure that wxPython does not use your explicit ID elsewhere by calling wx.RegisterId()
+
+2.) get wxPython to create an ID using wx.NewID()
+id = wx.NewId()
+frame = wx.Frame.__init__(None, id)
+
+3.) pass either a global constant wx.ID_ANY or -1 to the widget widget_constructor
+wx.ID_ANY
+
+frame = wx.Frame.__init__(None, -1)
+id = frame.GetID()
+
+Some helpers
+point = wx.Point(x_value, y_value)
+
+wx.RealPoint() uses floating-point coordinates
+
+wx.Frame styles
+takes a bitmask
+
+SetStyle() allows you to change the styles after the widget was created
+
+| to use multiple styles
+
+the default
+wx.MAXIMIZE_BOX | wx.MINIMIZE_BOX | wx.RESIZE_BORDER | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX
+
+disable the user from resizing the window
+wx.DEFAULT_FRAME_STYLE ^ (wx.RESIZE_BORDER | wx.MINIMIZE_BOX | wx.MAXIMIZE_BOX)
+
+Adding additional widgets
+If a frame is created with a single child window, then the child window automatically is resized to fill the client area of the frame, this automatic resizing will override any position or size information for the child
+Sizers: allow you to set the size of a widget
+
+Dialog Boxes
+# GetSelection() returns the index of the selection
+response = self.choices.GetStringSelection()
+
+
+
+Chapter03
+Working in an event-driven environment
+
+event: is something that happens in your system which your application can respond to by triggering functionality.
+event handling: the process by which events are mapped to code.
+event object: the concrete representation of an event in wxPython including data attributes that encapsulate the specifics of the event
+event type: an integer ID that wxPython adds to every event object
+event source: any wxPython object that creates events
+event queue: a continuously maintained list of events that have already occurred, but not yet been processed
+event handler (handler function or handler method): a written function/method that is called in response to an event
+event binder: a wxPython object that encapsulates the relationship between a specific widget, a specific event type and an event handler. In order to be invoked, all event handlers must be registered with an event handler
+wx.EvtHandler: a wxPython class that allows its instances to create a binding between an event binder of a specific type, an event source and an event handler
+
+event-driven program is mainly a control structure that receives events and responds to them
+
+Coding Event Handlers
+self.Bind(wx.EVT_BUTTON, self.OnClick, aButton)
+Bind() is a method wx.EvtHandler, which is a parent class of all display objects
+
+Event triggers
+most widgets cause higher level events to be fired in response to lower level events
+objects in wxPython are instances of the wx.Event class, or one of its subclasses
+
+event types names start with wx.EVT_
+event binders are used to connect a wxPython widget with an event object + handler function
+1.) event object
+2.) handler function
+this connection allows the wxPython system to respond to an event on that widget by executing the code in the handler function
+
+any object which can respond to an event is a sublcass of wx.EvtHandler
+
+Binding
+self.Bind(event, handler, source=None, id=wx.ID_ANY, id2=wx.ID_ANY)
+
+# real example
+self.Bind(wx.EVT_BUTTON, self.OnClick, button)
+
+Binding multiple kinds of mouse events
+
+self.Bind(wx.EVT_BUTTON, self.OnMyEvent, self.widget)
+# example
+self.Bind(wx.EVT_BUTTON, self.OnButtonClick, self.button)
+
+
+self.button.Bind(wx.EVT_NAME, self.OnMyEvent)
+# example
+self.buttion.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
+
+The Event Handling Process
+1.) Creating the event
+2.) Determining whether the object is allowed to process events, ProcessEvent() returns True if event processing is complete at the end of the method
+3.) Locating the binder object, the ProcessEvent() then looks for a binder object that recognizes a binding between the event type and the current object
+4.) Determining whether to continue processing, after calling the first event handler, wxPython checks to see if further processing is requested
+5.) Determining whether to propagate, wxPython determines whether the event process should propagate up the container hierarchy to find an event handler
+
+calling Skip() method of the event is called before the handler returns, allows additional handler bindings to be searched for
+
+to enable further processing, must call Skip()
+used when binding to lower level events like a mouse up/down, wxPython expects to catch those events in order to generate further events
+if Skip() isn't called, blocking behavior could occur, losing the visual notification that a button has been clicked
+
+Create custom events
+page 109 to 112
+
+
+
+Chapter04
+Making wxPython easier to handle with PyCrust
+
+$ pycrust
+
+Wrap PyCrust around my wxPython application
+need to use PyWrap, but you have to find it
+1.) Lanuch pycrust, $pycrust
+2.) Find where the files are located (this also includes the other tools)
+use this website to find where PyWrap is: https://docs.wxpython.org/wx.py.PyWrap.html
+or
+import wx
+wx.py.PyWrap # prints the file location of PyWrap.py
+
+It seems it's located here
+C:\my_venv\Lib\sit-packages\wx\py
+# example
+C:\Python_GUI_Tests\Lib\site-packages\wx\py
+
+3.) $ PyWrap.py my_file.py
+this will lanuch PyCrust and allow you to run it in an interactive mode
+
+Program     Description
+PyAlaCarte  Simple source code editor. Edits one file at a time.
+PyAlaMode   Multi-file source code editor. Each file is displayed in a separate notebook tab. The first tab contains a PyCrust splitter window.
+PyCrust     Combination of a wxPython shell with a notebook of tabs displaying a variety of runtime information, including a namespace tree viewer.
+PyFilling   Simple namespace tree viewer. This program isn’t terribly useful on its own. It exists simply as another example of how to use the underlying library.
+PyShell     Simple wxPython shell interface, without the additional notebook that appears in PyCrust. Functionally, the wxPython shells in PyShell and PyCrust are identical.
+PyWrap      Command-line utility that runs an existing wxPython program alongside a PyCrust frame, allowing you to manipulate the application within the PyCrust shell.
+
+
+
+Chapter05
+Creating your blueprint
+
+PyGridTableBase
+Page 162
+
+
+
+Chapter06
+Working with the basic building blocks
+
+device context: allows drawing on screen, abstracts a display device giving each device a common set of draw methods
+wx.DC abstract class
+
+Page 191 to create a menu bar
+
+Getting information via standard file dialogs
+wx.FileDialog(parent, message='Choose a file', defaultDir='', defaultFile='', wildcard='*.*', style=0)
+
+wildcard='(*.csv)|*.csv'
+
+Layout Mechanism
+sizer, each different sizer managers the size and position of its windows based on a set of rules
+
+Creating a sizer
+1.) Create the panel/container that you want to be automatically sized
+2.) Create the sizer
+3.) Create the subwindows
+4.) Add each subwindow to the sizer, using Add(). Give the following:
+    amount of space to surround the window
+    how to align the window within the allotted space managed by the sizer
+    how to extend the window when the container window resizes
+5.) Can nest sizers as needed
+6.) Call the method SetSizer(sizer) of the container
+
+
+
+
+
+PART II - ESSENTIAL WXPYTHON
+Chapter07
+Working with the basic controls
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
