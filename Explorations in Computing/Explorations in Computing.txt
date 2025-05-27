@@ -1,0 +1,149 @@
+
+
+Chapter01
+Introduction
+
+Computation: solving a complex problem by repeated, systematic execution of a series of simple and straightforward operations
+
+Algorithm is characterized by:
+1.) a precise statement of the starting conditions, which are inputs to the algorithm
+2.) a specification of the final state of the algorithm, which is used to decide when the algorithm will terminate
+3.) a detailed description of the individual steps, each of which is simple and straight-forward operation that will help move the algorithm toward its final state
+How to carry out a computation
+
+
+
+Chapter02
+The Python Workbench
+
+Chapter03
+The Sieve of Eratosthenes: An algorithm for finding prime numbers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter04
+A Journey of a Thousand Miles: Iteration as a strategy for solving computational problems
+
+Chapter05
+Divide and Conquer: A new strategy: Breaking large problems into smaller subproblems
+
+Chapter06
+Spam, Spam, Spam, Mail, and Spam: A machine learning approach to filtering junk mail
+
+Chapter07
+Now for Something Completely Different: An algorithm for generating random numbers
+
+Chapter08
+Bit by Bit: Binary codes and algorithms for text compression and error detection
+
+Chapter09
+The War of the Words: Computer architecture and machine level programming
+
+Chapter10
+I'd Like to Have an Argument, Please: A program that understands English (or does it?)
+
+Chapter11
+The Music of the Spheres: Computer simulation and the N-body problem
+
+Chapter12
+The Traveling Salesman: A genetic algorithm for a computationally demanding problem
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
