@@ -1,0 +1,280 @@
+https://github.com/michaeljamesfitzgerald/Introducing-Regular-Expressions
+
+Chapter01
+https://www.regexpal.com
+
+Cheat sheet from above website
+Character classes
+.		any character except newline
+\w \d \s	word, digit, whitespace
+\W \D \S	not word, digit, whitespace
+[abc]		any of a, b, or c
+[^abc]		not a, b, or c
+[a-g]		character between a & g
+Anchors
+^abc$		start / end of the string
+\b		word boundary
+Escaped characters
+\. \* \\	escaped special characters
+\t \n \r	tab, linefeed, carriage return
+\u00A9		unicode escaped ©
+Groups & Lookaround
+(abc)		capture group
+\1		backreference to group #1
+(?:abc)		non-capturing group
+(?=abc)		positive lookahead
+(?!abc)		negative lookahead
+Quantifiers & Alternation
+a* a+ a?	0 or more, 1 or more, 0 or 1
+a{5} a{2,}	exactly five, two or more
+a{1,3}	between one & three
+a+? a{2,}?	match as few as possible
+ab|cd		match ab or cd
+
+can use string literal to match a string in the target next
+string literal: is a literal is a literal representation of a string
+
+metacharacter: has special meaning in regular expressions and is reserved
+character class (character set): a regular expression in the form [0-9]
+
+Capturing Groups and Back References
+(\d)\d\1
+for example
+707-827-7019
+captures 7, matches 0 but does capture it, references the the captured group
+
+Quantifiers
+? optional
+* 0 or more
++ one or more
+
+Character-by-character search
+( open a capturing groug
+\ start character shorthand (escape the following character)
+d end character shorthand (match any digit in the range 0 through 9 with \d)
+{ open quantifier
+3 minimum quantity to match
+, separate quantities
+4 maximum quantity to match
+} close quantifier
+[ open character class
+. dot or period (matches literal dot)
+- literal character to match hyphen
+] close character class
+? zero or one quantifier
+) close capturing group
++ one or more quantifier
+
+
+
+Chapter02
+https://regexr.com
+
+Character 				Shorthand Description
+\a 					Alert
+\b 					Word boundary
+[\b] 					Backspace character
+\B 					Non-word boundary
+\c x 					Control character
+\d 					Digit character
+\D 					Non-digit character
+\d xxx 					Decimal value for a character
+\f 					Form feed character
+\r 					Carriage return
+\n 					Newline character
+pass:[<literal>\o</literal>		Octal value for a character
+<replaceable>\xxx</replaceable>]
+\s 					Space character
+\S 					Non-space character
+\t 					Horizontal tab character
+\v 					Vertical tab character
+\w 					Word character
+\W 					Non-word character
+\0 					Nul character
+\ xxx 					Hexadecimal value for a character
+\u xxxx 				Unicode value for a character
+
+Character 				Shorthand Description
+\f 					Form feed
+\h 					Horizontal whitespace
+\H 					Not horizontal whitespace
+\n 					Newline
+\r 					Carriage return
+\t 					Horizontal tab
+\v 					Vertical tab (whitespace)
+\V 					Not vertical whitespace
+
+
+
+Chapter03
+Assertions: mark boundaries, don't consume characters, don't return characters.
+aka Zero-wdith Assertions: matches a location in a string
+^ match the beginning of line/string
+$ match the end of a line/string
+
+
+
+Chapter04
+Alternation: gives you a choice of alternate patterns to match. For example how do you match 'the' ==> THE, The, the
+
+Options in regular expressions
+Option 	Description 			Supported by
+(?d) 	Unix lines 			Java
+(?i) 	Case insensitive 		PCRE, Perl, Java
+(?J) 	Allow duplicate names 		PCRE*
+(?m) 	Multiline 			PCRE, Perl, Java
+(?s) 	Single line (dotall) 		PCRE, Perl, Java
+(?u) 	Unicode case 			Java
+(?U) 	Default match lazy 		PCRE
+(?x) 	Ignore whitespace, comments 	PCRE, Perl, Java
+(?-…) 	Unset or turn off options 	PCRE
+
+Subpatterns: group or groups within groups. A pattern is a pattern within a pattern.
+
+Named groups: are captured groups with names.
+
+Named group syntax
+Syntax 		Description
+(?<name>…) 	A named group
+(?name…) 	Another named group
+(?P<name>…) 	A named group in Python
+\k<name> 	Reference by name in Perl
+\k'name' 	Reference by name in Perl
+\g{name} 	Reference by name in Perl
+\k{name} 	Reference by name in .NET
+(?P=name) 	Reference by name in Python
+
+Non-capturing groups
+don't store their content in memory
+(?:group_stuff)
+
+
+
+Chapter05
+Character classes (Bracketed expressions)
+help you match specific characters or sequences of specific characters
+
+Union and Difference
+Union of 2 character sets [0-3[6-9]], goes through 3 or 6 through 9
+
+
+
+Chapter06
+http://regexhero.net/tester
+
+Matching Unicode and other characters
+Code 		Description
+\uxxxx 		Unicode (four places)
+\xxx 		Unicode (two places)
+\x{xxxx} 	Unicode (four places)
+\x{xx} 		Unicode (two places)
+\000 		Octal (base 8)
+\cx 		Control character
+\0 		Null
+\a 		Bell
+\e 		Escape
+[\b] 		Backspace
+
+
+
+Chapter07
+Quantifiers
+Greedy quantifier tries to match the whole string
+Backtracking: if the 1st attempt to match the whole string goes wrong, it backs up 1 character and tries again.
+.* (Kleene star)
+
+Lazy(reluctant) quantifier: starts at the beginning of the target trying to find a match. It looks at the string 1 character at a time trying to find what it is looking for. Append ? to the regular quantifier
+
+Possessive quantifier: grabs the whole target and then tries to find a match but makes only 1 attempt. Append + to the regular quantifier.
+
+Greedy:     *
+Lazy:       ?
+Possessive: +
+
+Summary of range syntax
+Syntax 	Description
+{n} 	Match n times exactly
+{n,} 	Match n or more times
+{m,n} 	Match m to n times
+{0,1} 	Same as ? (zero or one)
+{1,0} 	Same as + (one or more)
+{0,} 	Same as * (zero or more)
+
+Lazy quantifiers
+Syntax 	Description
+?? 	Lazy zero or one (optional)
++? 	Lazy one or more
+*? 	Lazy zero or more
+{n}? 	Lazy n
+{n,}? 	Lazy n or more
+{m,n}? 	Lazy m,n
+
+Possessive quantifiers
+Syntax 	Description
+?+ 	Possessive zero or one (optional)
+++ 	Possessive one or more
+*+ 	Possessive zero or more
+{n}+ 	Possessive n
+{n,}+ 	Possessive n or more
+{m,n}+ 	Possessive m,n
+
+
+
+Chapter08
+Lookarounds: non-capturing groups that match patterns based on what they find either in front of or behind a pattern. Considered zero-width assertions
+Positive lookaheads
+Negative lookaheads
+Positive lookbehinds
+Negative lookbehinds
+
+Positive lookaheads
+find every occurrence of the X followed by Y
+
+Negative lookaheads
+the opposite of a positive lookahead
+
+Positive lookbehinds
+looks to the left
+
+Negative lookbehinds
+if the pattern does not show up behind in the left-to-right stream
+
+
+
+Chapter09
+Use as a reference for marking up HTML
+
+
+
+Chapter10
+https://docs.python.org/3/library/re.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

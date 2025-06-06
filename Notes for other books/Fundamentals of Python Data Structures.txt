@@ -1,0 +1,287 @@
+
+
+Chapter02
+Collection: a group of zero or more items that can be treated as a conceptual unit.
+
+Types of collections
+Linear collections: items are ordered by position
+Hierarchical collections: are ordered in a structure resembling an upside down tree. Each item, except the top item, has Predecessor (Parent) and successors (Children)
+Graph collections: each data item can have many predecessors and many successors, has neighbors instead
+Unordered collections: have no order
+Sorted collections: have a natural ordering. There must a rule for comparing items to impose natural ordering
+
+Taxonomy of Collection Types
+Collection
+	Graph collection
+	Hierarchical collection
+		Binary search tree
+		Heap
+	Linear collection
+		List
+			Sorted List
+		Queue
+			Priority queue
+		Stack
+		String
+	Unordered collection
+		Bag
+			Sorted bag
+		Dictionary
+			Sorted dictionary
+		Set
+			Sorted set
+
+Operations on collections
+Determine the size
+Test for item membership
+Traverse the collection
+Obtain a string representation
+Test for equality
+Concatenate two collections
+Convert to another type of collection
+Insert an item
+Remove an item
+Replace an item
+Access or retrieve an item
+
+From a user perspective only cares about the interface, a collection is an abstraction, Abstract Data Types (ADTs)
+
+Good definition of abstract:
+The idea of abstraction is not unique to a discussion of collections. It is an important
+principle
+in many endeavors both in and out of computer science. For example, when studying the effect of gravity on a falling object, you might try to create an experimental situation in which you can ignore incidental details such as the color and taste of the object (for example, the sort of apple that hit Newton on the head). When studying mathematics, you don’t concern yourself with what numbers might be used to count fishhooks or arrowheads, but try to discover abstract and enduring principles of numbers. A house plan is an abstraction of the physical house that allows you to focus on structural elements without being overwhelmed by incidental details such as the color of the kitchen cabinets—details that are important to the overall look of the completed house, but not to the relationships among the house’s main parts.
+
+
+
+Chapter03
+Correctness is the most essential criterion for assessing the quality of an algorithm
+
+Run-time performance
+Algorithmic process requires 2 resources:
+1.) Processing time
+2.) Space or memory
+
+Measuring the run time of an algorithm
+benchmarking or profiling: use different data sets of the same size and calculate the average time
+
+Counting instructions: count the instructions executed with different problem sizes
+1.) instructions that execute the same number of time regardless of the problem size
+2.) instructions whose execution count varies with the problem size
+Lacks the mathematical reasoning for a complete analysis
+
+Measuring the memory used by an algorithm
+
+Complexity Analysis
+Allows you to rate tge algorithm independently of platform-dependent timings or instruction counts.
+
+Orders of Complexity
+Asumptotic analysis: the value of a polynomial asumptotically approaches the value of its largest term as n becomes very large.
+
+Big-O Notation: "O" stands for "on the order of"
+The Constant of Proportionally: the terms and coefficients that are usually ignored during big-O analysis.
+
+Analysis considers three cases:
+1.) Worst case
+2.) Best case
+3.) Average case
+
+Basic sort algorithms
+Selection sort: each pass through the main loop selects a single item to be moved. O(n^2)
+Bubble sort: compare pairs of data items as it moves down to the end. Each time the items in the pair are out of order, the algorithm swaps them. O(n^2)
+Insertion sort: attempts to exploit the partial ordering of the list. If an object is already in it's proper place, don't bother sorting it. O(n^2)
+
+Faster sorting
+Use a divide and conquer strategy and sort the sublist recursively
+
+Quicksort
+O(n log n)
+1.) Select the item's midpoint the pivot.
+2.) Partition items. Left of the pivot less than the midpoint, the rest are right of the pivot. The pivot moves so that when the pivot is at the end, the list is sorted.
+3.) Divide and conquer. Repeat the process
+4.) The process terminates each it encounters a sublist with fewer than 2 items.
+Page 89 diagram
+
+Merge Sort
+O(n log n)
+1.) Compute the middle position of a list and recursively sort is left and right sublists (divide and conquer)
+2.) Merge the two sorted sublist back into a single sorted list
+3.) Stop the process when sublists can no longer be subdivided
+
+Memoization: the program maintains a table of the values for each argument used with the function
+
+
+
+Chapter04
+Arrays and Linked Structures
+Data structure and conrete data type refer to the internal representation of a collection's data.
+
+Physical size: of an array is the total number of array cells, or the number used to specify its capacity when the array is created
+Logical size: of an array is the number of items in it that should be currently available to the application
+
+Load factor: the number of items stored in the array divided by the array's capacity.
+
+Operations on single linked structures
+Almost all operations on arrays are index based
+Traversal: visiting each item in your collection. Linear and require no extra memory
+Searching:
+Replacement
+
+Main advantage of the singly linked structure over an array is memory performance
+Resizing an array is linear in time and memory
+Resizing a linked structure is constant in time and memory. No memory ever goes to waste. The physical size of the structure never exceeds the logical size
+
+The running times of operations on singly linked structures
+Operation                           Running time
+Acces at the ith position           O(n) average case
+Replacement at the ith position     O(n), average case
+Insert at beginning                 O(1), best and worst case
+Remove from beginning               O(1), best and worst case
+Insert at ith position              O(n), average case
+Remove from ith position            O(n), average case
+
+
+
+Chapter05
+One of the hallmarks of well-designed software is the clean separation of interfaces from implementations
+The concern is mainly of its interface
+Interface: the set of methods, functions and data type names available to them
+Implementation is hidden (encapsulated) within an abstraction barrier
+
+Precondition: a statement of what must be true for a method to perform its actions correctly. This condition has to do with the state of the object on which the method is run.
+Postcondition: states what will be true after the method completes execution, assuming that its preconditions are also true.
+
+Composition relates 2 classes as part to whole
+Aggregation relates a class to another class as one to many
+
+
+
+Chapter06
+Inheritance and Abstract Classes
+
+Generalizing an abstract type
+col = type(self)(self)
+type(self)(self) give the type of self (some collection) and then run that as a constructor on the same collection to give a copy of that
+
+A class can call a method in its superclass by using the superclass name as a prefix to the method
+
+
+
+Chapter07
+Stacks
+Linear collections in which access is completely restricted to just one end, the top.
+
+A Backtracking algorithm: begins in a predefined starting state and then moves from state to state in search of a desired ending state. At any point along the way (when there is a choice between several alternative states) the algorithm picks one, possibly at random and continues.
+
+Page 210 has an interesting case study to review
+
+
+
+Chapter08
+Queues
+Similar to stacks, they are linear collections, but insertions are restricted to the rear and removals are restricted to the front.
+Priority queue: the item popped (removed next) is always the item that has been waiting the longest
+
+
+
+Chapter09
+Lists
+
+Lists can be placed into the following categories
+1.) Index-based operations
+2.) Content-based operations
+3.) Position-based operations
+
+Head: the first item in a list
+Tail: the last item in a list
+
+
+
+Chapter10
+Trees
+a hierarchical collection
+Predecessor: parent
+Successor: child
+
+Term            Definition
+Node                An item stored in a tree.
+Root                The topmost node in a tree. It is the only node without a parent.
+Child               A node immediately below and directly connected to a given node. A node can have more than one child, and its children are viewed as organized in left-
+                    to-right order. The leftmost child is called the first child, and the rightmost is called the last child.
+Parent              A node immediately above and directly connected to a given node. A node can have only one parent.
+Siblings            The children of a common parent.
+Leaf                A node that has no children.
+Interior node       A node that has at least one child.
+Edge/Branch/Link    The line that connects a parent to its child.
+Descendant          A node’s children, its children’s children, and so on, down to the leaves.
+Ancestor            A node’s parent, its parent’s parent, and so on, up to the root.
+Path                The sequence of edges that connect a node and one of its descendants.
+Path length         The number of edges in a path.
+Depth or level      The depth or level of a node equals the length of the path connecting it to the root. Thus, the root depth or level of the root is 0. Its children are
+                    atlevel 1, and so on.
+Height              The length of the longest path in the tree; put differently, the maximum level number among leaves in the tree.
+Subtree             The tree formed by considering a node and all its descendants.
+
+Twp types of trees:
+1.) General tree
+2.) Binary tree: each node has at most 2 children, referred to as the left chld and the right child
+
+
+General tree: either empty or consists of a finite set of nodes T. Node r is considered the parent. The set T - {r} is partitioned into disjointed subsets, each of which is a general tree.
+Binary tree: is either empty or consists of a root plus a left subtree and a right, each of which is a binary tree
+
+The Shape of Binary Trees
+The shape of a binary tree can be described by specifying the relationship between its height and the number of nodes it contains.
+
+Binary tree traversals
+1.) Preorder Traversal
+2.) Inorder Traversal
+3.) Postorder Traversal
+4.) Level Order Traversal
+
+Preorder Traversal
+visits the tree's root node and then traverses the left subtree and the right subtreee in a similar manner
+
+Inorder Traversal
+Traverses the left subtree, visits the root node, traverses the right subtree
+
+Postorder Traversal
+Traverses the left subtree, traverses the right subtree and visits the root node
+
+Level Order Traversal
+Begins with level 0, visits the nodes at each level in left-to-right order
+
+Applications of Binary Trees
+1.) Heaps: binary trees drawn from ordered sets that can be compared
+2.) Binary Search Trees: left subtree nodes < right subtree nodes
+3.) Expression Trees: is never empty and each interior node represents a compound expression, consisting of an operator and its operands, each interior node has exactly two children, that represent its operands. Each leaf node represents an atomic, numeric operand. Operators of higher precedence ususally appear near the bottom of the tree.
+
+
+
+Chapter11
+Sets and Dictionaries
+
+Methods to avoid hash collisions
+Linear Probing
+Quadratic Probing
+Chaining
+
+
+
+Chapter12
+Graphs
+Consists of a set of:
+Vertices (V)
+Edges (E)
+
+Representations og Graphs
+Adjacency matrix: represents the information about a graph in a matrix or grid formtat 
+Adjacency list: represents the information in a list
+
+Traversal patterns
+Depth-first traversal: uses a stack as the collection in the generic algorithm. Forces the traversal process to go deeply into the graph before backtracking to another path.
+Breadth-first traversal: uses a queue as the collection in the generic algorithm. Forces the traversal process to visit every vertex adjacent to a given vertex before it moves deeper into the graph.
+
+Shortest-Path Problem
+Dijkstra's Algorithm
+Floyd's Algorithm
+
